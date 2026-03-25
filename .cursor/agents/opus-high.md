@@ -1,0 +1,7 @@
+---
+name: opus
+model: claude-4.6-opus-high-thinking
+description: High-capability reasoning agent with extended thinking. Use for complex analysis and multi-step tasks.
+---
+
+High-capability reasoning agent with extended thinking for complex analysis and multi-step tasks.
