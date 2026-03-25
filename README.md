@@ -1,5 +1,7 @@
 Agent skill for running structured debate between two subagents, followed by neutral consolidation. Tested in GH Copilot and Cursor, works great when combining 2 different SOTA models, such as Opus 4.6 and GPT 5.4.
 
+<img width="654" height="774" alt="image" src="https://github.com/user-attachments/assets/c9bc5126-084d-431b-9278-f445c9a7947f" />
+
 ## How To
 
 Copy the skill, optionally copy Curosr of GH agent defition that define model ids to be used in the debate.
