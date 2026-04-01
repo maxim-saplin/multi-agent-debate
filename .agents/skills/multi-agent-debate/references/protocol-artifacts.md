@@ -1,6 +1,6 @@
 # Protocol Artifacts
 
-Use these schemas for live runs only. Keep them compact and specific to the task at hand.
+Use these schemas for live runs only. Keep them compact and specific to the task at hand. These shared artifacts work for both the default 2-agent mode and the explicit 3-agent mode.
 
 ## `TaskPacket`
 
@@ -37,6 +37,7 @@ LensAssignment
 
 Notes:
 
+- `branch_label` should stay stable across the run, such as `Branch A`, `Branch B`, or `Branch C`.
 - Lenses should create productive tension, not theater.
 - `anti_goal` helps prevent mirrored memos.
 
@@ -88,30 +89,51 @@ Rules:
 - Allow one repair pass only.
 - Treat out-of-scope or outside-packet action framing as a blocking issue even when it sounds useful.
 - If `divergence_signal: low`, prefer one targeted challenge note over a full critique loop.
+- In a multi-branch run, judge `divergence_signal` against the current branch set, not only one peer.
+
+## `TargetedChallengeNote`
+
+```text
+TargetedChallengeNote
+- branch_label:
+- target_branch:
+- focus_issue:
+- why_it_matters:
+- required_update:
+- resolvable_from_packet: yes|no|partly
+```
+
+Rules:
+
+- Use this only when divergence is low and a full critique round would be theater.
+- `target_branch` names the peer branch whose claim or framing needs the most valuable challenge.
+- `required_update` should state the specific revision that would reduce the disagreement.
 
 ## `CrossCritique`
 
 ```text
 CrossCritique
 - branch_label:
-- target_branch:
-- strongest_points_in_target[]:
-- disagreements[]:
-  - disagreement_id:
-  - type: factual|interpretive|scope|risk|missing-evidence
-  - target_level: claim|thesis|structure
-  - target_claim_id:
-  - issue:
-  - why_it_matters:
-  - resolvable_from_packet: yes|no|partly
-  - required_update:
-- claims_i_concede[]:
-- remaining_non_negotiables[]:
+- target_reviews[]:
+  - target_branch:
+  - strongest_points_in_target[]:
+  - disagreements[]:
+    - disagreement_id:
+    - type: factual|interpretive|scope|risk|missing-evidence
+    - target_level: claim|thesis|structure
+    - target_claim_id:
+    - issue:
+    - why_it_matters:
+    - resolvable_from_packet: yes|no|partly
+    - required_update:
+  - claims_i_concede[]:
+  - remaining_non_negotiables[]:
 ```
 
 Rules:
 
-- Start with the target's strongest points.
+- One `CrossCritique` artifact may cover one target in 2-agent mode or multiple targets in 3-agent mode.
+- Start each target review with the target's strongest points.
 - `required_update` must be actionable.
 - Use `target_level: thesis` or `target_level: structure` when the problem is broader than one claim.
 - Call out outside-packet reasoning explicitly.
@@ -120,9 +142,10 @@ Rules:
 
 ```text
 ResolutionMatrix
-- claim_id:
-- branch_a_position:
-- branch_b_position:
+- issue_id:
+- branch_positions[]:
+  - branch_label:
+  - position:
 - status: accepted|accepted_with_caveat|rejected|unresolved
 - rationale:
 - winning_evidence_or_reason:
@@ -134,6 +157,8 @@ ResolutionMatrix
 Rules:
 
 - Every material disagreement from critique should appear here.
+- Use one row per material claim or synthesized issue that matters to the final decision.
+- `branch_positions` should include each active branch exactly once for that row.
 - `unresolved` is valid when the packet cannot settle the issue with confidence.
 - If the consolidator creates a new option, cite which branch fragments support it.
 
@@ -149,7 +174,9 @@ DecisionPackage
 - major_assumptions[]:
 - next_data_needed[]:
 - recommended_next_steps[]:
-- run_mode: full-debate|single-branch-complete|one-branch-shallow|missing-critique|both-branches-weak|underspecified-task
-- MissingCounterarguments[]: optional, required in `single-branch-complete`
+- run_mode: full-debate|limited-branches|shallow-branch-input|missing-critique|weak-branch-set|underspecified-task
+- planned_branch_count:
+- active_branches[]:
+- MissingCounterarguments[]: optional, required in `limited-branches`
 - UnchallengedIssueList[]: optional, required in `missing-critique`
 ```
